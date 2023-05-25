@@ -4,12 +4,13 @@ import Head from "next/head";
 import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { LoadingPage } from "~/components/Loading";
+import { LoadingPage, LoadingSpinner } from "~/components/Loading";
 
 dayjs.extend(relativeTime);
 
 import { RouterOutputs, api } from "~/utils/api";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -23,6 +24,15 @@ const CreatePostWizard = () => {
       setInput("");
       void ctx.posts.getAll.invalidate();
     },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]!);
+      } else {
+        toast.error("Failed to post! Please try again later.");
+      }
+
+    }
   });
 
   if (!user) return null;
@@ -37,8 +47,22 @@ const CreatePostWizard = () => {
         type="text"
         onChange={(e) => setInput(e.target.value)}
         disabled={isPosting}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (input !== "") {
+              mutate({
+                content: input
+              })
+            }
+          }
+        }}
       />
-      <button onClick={() => mutate({ content: input })}>Post</button>
+      {input !== "" && !isPosting && <button onClick={() => mutate({ content: input })}>Post</button>}
+      {isPosting &&
+        <div className="flex justify-center items-center">
+          <LoadingSpinner size={20} />
+        </div>}
     </div>
   )
 }
@@ -73,8 +97,6 @@ const Feed = () => {
     </div>
   )
 }
-
-
 
 const Home: NextPage = () => {
 
