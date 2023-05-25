@@ -11,6 +11,7 @@ dayjs.extend(relativeTime);
 import { RouterOutputs, api } from "~/utils/api";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -77,7 +78,12 @@ const PostView = (props: PostWithUser) => {
       <Image src={author.profileImageUrl} alt="profile image" width={56} height={56} />
       <div className=" flex flex-col">
         <div className=" flex text-slate-300 font-bold">
-          <span>{`@${author.username!} · ${dayjs(post.createdAt).fromNow()}`} </span>
+          <Link href={`/@${author.username}`}>
+            <span>{`@${author.username!}`}</span>
+          </Link>
+          <Link href={`/post/${post.id}`}>
+            <span>{` · ${dayjs(post.createdAt).fromNow()}`} </span>
+          </Link>
         </div>
         <span className=" text-2xl">{post.content}</span>
       </div>
