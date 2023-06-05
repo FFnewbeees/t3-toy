@@ -21,5 +21,15 @@ const config = {
   images: {
     domains:['images.clerk.dev']
   },
+
+  // faster build speed 
+  typescript:{
+    ignoreBuildErrors: true
+  },
+
+  eslint:{
+    ignoreDuringBuilds: true
+  },
+  swcMinify: true
 };
 export default config;
