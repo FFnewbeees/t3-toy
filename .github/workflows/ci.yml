@@ -11,16 +11,18 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
 
-      - name: Typecheck
-        run: npm run typecheck
+      - name: Install dependencies
+        run: yarn install
 
-      - name: Lint
-        run: npm run lint
+      - name: Run TypeScript type check
+        run: yarn run tsc --noEmit
 
-      - name: Print Environment Variable
-        run: echo $MY_ENV_VAR
+      - name: Run lint
+        run: yarn run lint
